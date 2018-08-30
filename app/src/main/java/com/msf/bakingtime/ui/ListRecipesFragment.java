@@ -10,7 +10,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -48,6 +50,8 @@ public class ListRecipesFragment extends Fragment {
 
     private RecipeViewModel recipeViewModel;
 
+    private RecyclerView.LayoutManager mLayoutManager;
+
     public ListRecipesFragment() {
     }
 
@@ -77,16 +81,28 @@ public class ListRecipesFragment extends Fragment {
         } else {
             showNetworkOffline();
         }
-        buildRecycler();
+        setupRecyclerView();
     }
 
     private void observableFromVM() {
         recipeViewModel.getMutableLiveDataRecipes().observe(this, new Observer<List<Recipe>>() {
             @Override
             public void onChanged(@Nullable List<Recipe> recipes) {
-                Log.d("Teste", String.valueOf(recipes.size()));
+                buildRecyclerOrErroView(recipes);
             }
         });
+    }
+
+    private void buildRecyclerOrErroView(@Nullable List<Recipe> recipes){
+        if(recipes != null){
+            RecipeAdapter recipeAdapter = new RecipeAdapter(getContext(), recipes);
+            mRecyclerViewRecipes.setAdapter(recipeAdapter);
+            mRecyclerViewRecipes.setVisibility(View.VISIBLE);
+        } else {
+            mRecyclerViewRecipes.setVisibility(View.INVISIBLE);
+            mErrorMessage.setText(getText(R.string.an_error_has_occurred));
+        }
+        mProgressLoading.setVisibility(View.INVISIBLE);
     }
 
     private void showNetworkOffline() {
@@ -103,11 +119,20 @@ public class ListRecipesFragment extends Fragment {
         }
     }
 
-    private void buildRecycler() {
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
+    private void setupRecyclerView() {
+        mLayoutManager = new LinearLayoutManager(getContext());
         mRecyclerViewRecipes.setLayoutManager(mLayoutManager);
         mRecyclerViewRecipes.setItemAnimator(new DefaultItemAnimator());
         mRecyclerViewRecipes.setHasFixedSize(true);
+        setUpItemDecoration();
+    }
+
+    private void setUpItemDecoration() {
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(),mLayoutManager.getLayoutDirection());
+        dividerItemDecoration.setDrawable(
+                ContextCompat.getDrawable(getContext(), R.drawable.divider_recycler)
+        );
+        mRecyclerViewRecipes.addItemDecoration(dividerItemDecoration);
     }
 
     private boolean isOnline(){

@@ -10,7 +10,7 @@ import lombok.Data;
 public class Ingredient implements Comparable<Ingredient> {
 
     @SerializedName("quantity")
-    private int quantity;
+    private double quantity;
 
     @SerializedName("measure")
     private String measure;
@@ -20,6 +20,6 @@ public class Ingredient implements Comparable<Ingredient> {
 
     @Override
     public int compareTo(@NonNull Ingredient ingredient) {
-        return this.quantity - ingredient.quantity;
+        return (int) (this.quantity - ingredient.quantity);
     }
 }
