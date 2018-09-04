@@ -4,5 +4,6 @@
     <string name="an_error_has_occurred">An error has occurred</string>
     <string name="no_network">No network detected</string>
     <string name="try_again">Try again?</string>
+    <string name="instructions">Instructions</string>
 
 </resources>
