@@ -1,8 +1,10 @@
 package com.msf.bakingtime.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 
 import com.msf.bakingtime.R;
 import com.msf.bakingtime.model.Recipe;
@@ -11,7 +13,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
-public class MainActivity extends AppCompatActivity implements ListRecipesFragment.OnRecipeListener{
+public class MainActivity extends AppCompatActivity implements RecipeAdapter.OnRecipeListener {
 
     private boolean mTwoPane;
 
@@ -29,6 +31,10 @@ public class MainActivity extends AppCompatActivity implements ListRecipesFragme
 
     @Override
     public void onItemClick(Recipe recipe) {
-
+        Bundle b = new Bundle();
+        b.putParcelable("recipe", recipe);
+        final Intent intent = new Intent(this, RecipeDetailActivity.class);
+        intent.putExtras(b);
+        startActivity(intent);
     }
 }

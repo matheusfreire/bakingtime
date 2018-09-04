@@ -15,7 +15,6 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,8 +35,6 @@ import butterknife.ButterKnife;
 
 public class ListRecipesFragment extends Fragment {
 
-    private OnRecipeListener mListener;
-
     @BindView(R.id.recipe_list)
     RecyclerView mRecyclerViewRecipes;
 
@@ -53,12 +50,6 @@ public class ListRecipesFragment extends Fragment {
     private RecyclerView.LayoutManager mLayoutManager;
 
     public ListRecipesFragment() {
-    }
-
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -95,10 +86,12 @@ public class ListRecipesFragment extends Fragment {
 
     private void buildRecyclerOrErroView(@Nullable List<Recipe> recipes){
         if(recipes != null){
-            RecipeAdapter recipeAdapter = new RecipeAdapter(getContext(), recipes);
+            RecipeAdapter recipeAdapter = new RecipeAdapter(getContext(), recipes, (RecipeAdapter.OnRecipeListener) getActivity());
             mRecyclerViewRecipes.setAdapter(recipeAdapter);
             mRecyclerViewRecipes.setVisibility(View.VISIBLE);
+            mErrorMessage.setVisibility(View.INVISIBLE);
         } else {
+            mRecyclerViewRecipes.setAdapter(null);
             mRecyclerViewRecipes.setVisibility(View.INVISIBLE);
             mErrorMessage.setText(getText(R.string.an_error_has_occurred));
         }
@@ -109,14 +102,8 @@ public class ListRecipesFragment extends Fragment {
         mErrorMessage.setText(R.string.no_network);
         mRecyclerViewRecipes.setAdapter(null);
         mRecyclerViewRecipes.setVisibility(View.INVISIBLE);
-        Snackbar mySnackbar = Snackbar.make(getActivity().getCurrentFocus(),R.string.try_again, Snackbar.LENGTH_SHORT);
+        Snackbar mySnackbar = Snackbar.make(this.getView(),R.string.try_again, Snackbar.LENGTH_SHORT);
         mySnackbar.show();
-    }
-
-    public void onButtonPressed(Recipe recipe) {
-        if (mListener != null) {
-            mListener.onItemClick(recipe);
-        }
     }
 
     private void setupRecyclerView() {
@@ -129,9 +116,7 @@ public class ListRecipesFragment extends Fragment {
 
     private void setUpItemDecoration() {
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(),mLayoutManager.getLayoutDirection());
-        dividerItemDecoration.setDrawable(
-                ContextCompat.getDrawable(getContext(), R.drawable.divider_recycler)
-        );
+        dividerItemDecoration.setDrawable(ContextCompat.getDrawable(getContext(), R.drawable.divider_recycler));
         mRecyclerViewRecipes.addItemDecoration(dividerItemDecoration);
     }
 
@@ -143,20 +128,9 @@ public class ListRecipesFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnRecipeListener) {
-            mListener = (OnRecipeListener) context;
-        } else {
+        if (!(context instanceof RecipeAdapter.OnRecipeListener)) {
             throw new RuntimeException(context.toString() + " must implement OnFragmentInteractionListener");
         }
     }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    public interface OnRecipeListener {
-        void onItemClick(Recipe recipe);
-    }
 }

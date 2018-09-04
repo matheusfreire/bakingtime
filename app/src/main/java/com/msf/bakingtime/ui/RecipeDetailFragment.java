@@ -9,9 +9,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.msf.bakingtime.R;
+import com.msf.bakingtime.model.Recipe;
+
+import butterknife.ButterKnife;
+
+import static com.msf.bakingtime.ui.RecipeDetailActivity.RECIPE_KEY;
 
 public class RecipeDetailFragment extends Fragment {
-    public static final String ARG_ITEM_ID = "item_id";
+    private Recipe recipe;
 
     public RecipeDetailFragment() {
     }
@@ -20,24 +25,20 @@ public class RecipeDetailFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (getArguments().containsKey(ARG_ITEM_ID)) {
+        if (getArguments().containsKey(RECIPE_KEY)) {
+            recipe = getArguments().getParcelable(RECIPE_KEY);
             Activity activity = this.getActivity();
-            CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
+            CollapsingToolbarLayout appBarLayout = activity.findViewById(R.id.toolbar_layout);
             if (appBarLayout != null) {
-//                appBarLayout.setTitle(mItem.content);
+                appBarLayout.setTitle(recipe.getName());
             }
         }
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.recipe_detail, container, false);
-//
-//        if (mItem != null) {
-//            ((TextView) rootView.findViewById(R.id.recipe_detail)).setText(mItem.details);
-//        }
-
+        ButterKnife.bind(this, rootView);
         return rootView;
     }
 }

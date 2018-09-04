@@ -1,5 +1,8 @@
 package com.msf.bakingtime.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.util.TreeSet;
@@ -7,7 +10,7 @@ import java.util.TreeSet;
 import lombok.Data;
 
 @Data
-public class Recipe {
+public class Recipe implements Parcelable {
 
     @SerializedName("id")
     private long id;
@@ -20,4 +23,32 @@ public class Recipe {
 
     @SerializedName("steps")
     private TreeSet<Step> steps;
+
+    protected Recipe(Parcel in) {
+        id = in.readLong();
+        name = in.readString();
+    }
+
+    public static final Creator<Recipe> CREATOR = new Creator<Recipe>() {
+        @Override
+        public Recipe createFromParcel(Parcel in) {
+            return new Recipe(in);
+        }
+
+        @Override
+        public Recipe[] newArray(int size) {
+            return new Recipe[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(id);
+        dest.writeString(name);
+    }
 }

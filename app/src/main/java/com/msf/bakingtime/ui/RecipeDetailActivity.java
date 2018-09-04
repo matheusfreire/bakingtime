@@ -11,24 +11,25 @@ import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
 
 import com.msf.bakingtime.R;
+import com.msf.bakingtime.model.Recipe;
 
-/**
- * An activity representing a single Recipe detail screen. This
- * activity is only used on narrow width devices. On tablet-size devices,
- * item details are presented side-by-side with a list of items
- * in a {@link MainActivity}.
- */
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class RecipeDetailActivity extends AppCompatActivity {
+
+    public static final String RECIPE_KEY = "recipe";
+    @BindView(R.id.detail_toolbar)
+    Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_detail);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
+        ButterKnife.bind(this);
         setSupportActionBar(toolbar);
 
 
-        // Show the Up button in the action bar.
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
@@ -47,13 +48,12 @@ public class RecipeDetailActivity extends AppCompatActivity {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
             Bundle arguments = new Bundle();
-            arguments.putString(RecipeDetailFragment.ARG_ITEM_ID,
-                    getIntent().getStringExtra(RecipeDetailFragment.ARG_ITEM_ID));
+            Recipe recipe = getIntent().getParcelableExtra(RECIPE_KEY);
+            toolbar.setTitle(recipe.getName());
+            arguments.putParcelable(RECIPE_KEY, recipe);
             RecipeDetailFragment fragment = new RecipeDetailFragment();
             fragment.setArguments(arguments);
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.recipe_detail_container, fragment)
-                    .commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.recipe_detail_container, fragment).commit();
         }
     }
 
@@ -61,12 +61,6 @@ public class RecipeDetailActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == android.R.id.home) {
-            // This ID represents the Home or Up button. In the case of this
-            // activity, the Up button is shown. For
-            // more details, see the Navigation pattern on Android Design:
-            //
-            // http://developer.android.com/design/patterns/navigation.html#up-vs-back
-            //
             navigateUpTo(new Intent(this, MainActivity.class));
             return true;
         }
