@@ -22,7 +22,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
     private List<Recipe> mRecipes;
     private OnRecipeListener mListener;
 
-    public RecipeAdapter(Context context, List<Recipe> setRecipe, OnRecipeListener listener){
+    RecipeAdapter(Context context, List<Recipe> setRecipe, OnRecipeListener listener){
         this.mContext = context;
         this.mRecipes = setRecipe;
         this.mListener = listener;
