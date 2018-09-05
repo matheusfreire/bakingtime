@@ -2,10 +2,7 @@ package com.msf.bakingtime.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
@@ -18,7 +15,6 @@ import butterknife.ButterKnife;
 
 public class RecipeDetailActivity extends AppCompatActivity {
 
-    public static final String RECIPE_KEY = "recipe";
     @BindView(R.id.detail_toolbar)
     Toolbar toolbar;
 
@@ -48,9 +44,11 @@ public class RecipeDetailActivity extends AppCompatActivity {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
             Bundle arguments = new Bundle();
-            Recipe recipe = getIntent().getParcelableExtra(RECIPE_KEY);
+            Recipe recipe = getIntent().getParcelableExtra(MainActivity.RECIPE_KEY);
             toolbar.setTitle(recipe.getName());
-            arguments.putParcelable(RECIPE_KEY, recipe);
+            arguments.putParcelable(MainActivity.RECIPE_KEY, recipe);
+            arguments.putParcelableArrayList(MainActivity.INGREDIENTS_KEY, getIntent().getParcelableArrayListExtra(MainActivity.INGREDIENTS_KEY));
+            arguments.putParcelableArrayList(MainActivity.STEPS_KEY, getIntent().getParcelableArrayListExtra(MainActivity.STEPS_KEY));
             RecipeDetailFragment fragment = new RecipeDetailFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction().add(R.id.recipe_detail_container, fragment).commit();

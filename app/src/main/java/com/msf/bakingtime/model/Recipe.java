@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
 import java.util.TreeSet;
 
 import lombok.Data;
@@ -19,10 +20,10 @@ public class Recipe implements Parcelable {
     private String name;
 
     @SerializedName("ingredients")
-    private TreeSet<Ingredient> ingredients;
+    private List<Ingredient> ingredients;
 
     @SerializedName("steps")
-    private TreeSet<Step> steps;
+    private List<Step> steps;
 
     protected Recipe(Parcel in) {
         id = in.readLong();
