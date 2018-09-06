@@ -20,7 +20,6 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.OnR
     public static final String RECIPE_KEY = "recipe";
     public static final String INGREDIENTS_KEY = "ingredients";
     public static final String STEPS_KEY = "steps";
-    private boolean mTwoPane;
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -31,7 +30,6 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.OnR
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         toolbar.setTitle(getString(R.string.app_name));
-        mTwoPane = findViewById(R.id.recipe_detail_container) != null;
     }
 
     @Override

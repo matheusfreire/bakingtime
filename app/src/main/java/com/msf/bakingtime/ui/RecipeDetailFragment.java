@@ -46,11 +46,6 @@ public class RecipeDetailFragment extends Fragment implements InstructionAdapter
             recipe = getArguments().getParcelable(RECIPE_KEY);
             recipe.setIngredients(getArguments().<Ingredient>getParcelableArrayList(INGREDIENTS_KEY));
             recipe.setSteps(getArguments().<Step>getParcelableArrayList(STEPS_KEY));
-            Activity activity = this.getActivity();
-            CollapsingToolbarLayout appBarLayout = activity.findViewById(R.id.toolbar_layout);
-            if (appBarLayout != null) {
-                appBarLayout.setTitle(recipe.getName());
-            }
         }
     }
 
