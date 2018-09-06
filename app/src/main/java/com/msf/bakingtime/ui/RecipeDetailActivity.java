@@ -9,11 +9,12 @@ import android.view.MenuItem;
 
 import com.msf.bakingtime.R;
 import com.msf.bakingtime.model.Recipe;
+import com.msf.bakingtime.model.Step;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class RecipeDetailActivity extends AppCompatActivity {
+public class RecipeDetailActivity extends AppCompatActivity implements InstructionAdapter.OnInstructionListener {
 
     @BindView(R.id.detail_toolbar)
     Toolbar toolbar;
@@ -40,19 +41,30 @@ public class RecipeDetailActivity extends AppCompatActivity {
             arguments.putParcelable(MainActivity.RECIPE_KEY, recipe);
             arguments.putParcelableArrayList(MainActivity.INGREDIENTS_KEY, getIntent().getParcelableArrayListExtra(MainActivity.INGREDIENTS_KEY));
             arguments.putParcelableArrayList(MainActivity.STEPS_KEY, getIntent().getParcelableArrayListExtra(MainActivity.STEPS_KEY));
-            RecipeDetailFragment fragment = new RecipeDetailFragment();
-            fragment.setArguments(arguments);
+            RecipeDetailFragment fragment = RecipeDetailFragment.newInstance(this,arguments);
             getSupportFragmentManager().beginTransaction().add(R.id.recipe_detail_container, fragment).commit();
         }
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == android.R.id.home) {
+        onBackPressed();
+        return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (getSupportFragmentManager().getBackStackEntryCount() > 0){
+            getSupportFragmentManager().popBackStack();
+        } else {
             navigateUpTo(new Intent(this, MainActivity.class));
-            return true;
         }
-        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onItemClick(Step step) {
+        VideoFragment videoFragment = VideoFragment.newInstance(step, null);
+        getSupportFragmentManager().beginTransaction().addToBackStack(null)
+                .replace(R.id.recipe_detail_container, videoFragment).commit();
     }
 }

@@ -1,6 +1,7 @@
 package com.msf.bakingtime.ui;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -9,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +28,7 @@ import static com.msf.bakingtime.ui.MainActivity.INGREDIENTS_KEY;
 import static com.msf.bakingtime.ui.MainActivity.RECIPE_KEY;
 import static com.msf.bakingtime.ui.MainActivity.STEPS_KEY;
 
-public class RecipeDetailFragment extends Fragment implements InstructionAdapter.OnInstructionListener{
+public class RecipeDetailFragment extends Fragment {
     private Recipe recipe;
 
     @BindView(R.id.list_ingredients)
@@ -35,7 +37,16 @@ public class RecipeDetailFragment extends Fragment implements InstructionAdapter
     @BindView(R.id.recyclerViewInstructions)
     RecyclerView mRecyclerInstructions;
 
+    private InstructionAdapter.OnInstructionListener mListenerVideo;
+
     public RecipeDetailFragment() {
+    }
+
+    public static RecipeDetailFragment newInstance(InstructionAdapter.OnInstructionListener listener, Bundle arguments) {
+        RecipeDetailFragment fragment = new RecipeDetailFragment();
+        fragment.mListenerVideo = listener;
+        fragment.setArguments(arguments);
+        return fragment;
     }
 
     @Override
@@ -63,9 +74,17 @@ public class RecipeDetailFragment extends Fragment implements InstructionAdapter
         buildRecyclerInstruction();
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if(!(context instanceof InstructionAdapter.OnInstructionListener)){
+            throw new RuntimeException(context.toString() + "must implement InstructionAdapter.OnInstructionListener");
+        }
+    }
+
     private void buildRecyclerInstruction() {
         setupRecyclerView();
-        InstructionAdapter instructionAdapter = new InstructionAdapter(recipe.getSteps(), this);
+        InstructionAdapter instructionAdapter = new InstructionAdapter(recipe.getSteps(), mListenerVideo);
         mRecyclerInstructions.setAdapter(instructionAdapter);
     }
 
@@ -82,8 +101,4 @@ public class RecipeDetailFragment extends Fragment implements InstructionAdapter
         mListIngredients.setAdapter(ingredientsAdapter);
     }
 
-    @Override
-    public void onItemClick(Step step) {
-
-    }
 }
