@@ -4,6 +4,7 @@ package com.msf.bakingtime.ui;
 import android.media.session.PlaybackState;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.media.session.MediaSessionCompat;
@@ -11,7 +12,9 @@ import android.support.v4.media.session.PlaybackStateCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayer;
@@ -26,6 +29,7 @@ import com.google.android.exoplayer2.source.TrackGroupArray;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 import com.google.android.exoplayer2.trackselection.TrackSelector;
+import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
@@ -45,6 +49,9 @@ public class VideoFragment extends Fragment implements ExoPlayer.EventListener{
 
     @BindView(R.id.video_step)
     SimpleExoPlayerView mExoPlayerView;
+
+    @BindView(R.id.txt_step_description)
+    TextView mTxtDescription;
 
     private SimpleExoPlayer mSimpleExoPlayer;
     private MediaSessionCompat mMediaSessionCompat;
@@ -75,11 +82,20 @@ public class VideoFragment extends Fragment implements ExoPlayer.EventListener{
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView =inflater.inflate(R.layout.fragment_video, container, false);
         ButterKnife.bind(this, rootView);
-        initMediaSession();
-        initPlayer(step.getVideoUrl());
         return rootView;
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initMediaSession();
+        initPlayer(step.getVideoUrl());
+        setDescription();
+    }
+
+    private void setDescription() {
+        mTxtDescription.setText(step.getDescription());
+    }
 
     private void initPlayer(String url){
         if(mSimpleExoPlayer == null){
@@ -92,6 +108,8 @@ public class VideoFragment extends Fragment implements ExoPlayer.EventListener{
             String userAgent = Util.getUserAgent(getContext(), "bakingTime");
             MediaSource mediaSource = new ExtractorMediaSource(Uri.parse(url), new DefaultDataSourceFactory(
                     getContext(), userAgent), new DefaultExtractorsFactory(), null, null);
+            mExoPlayerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FILL);
+            mSimpleExoPlayer.setVideoScalingMode(C.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING);
             mSimpleExoPlayer.prepare(mediaSource);
             mSimpleExoPlayer.setPlayWhenReady(true);
         }

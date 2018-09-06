@@ -94,6 +94,7 @@ public class ListRecipesFragment extends Fragment {
             mRecyclerViewRecipes.setAdapter(null);
             mRecyclerViewRecipes.setVisibility(View.INVISIBLE);
             mErrorMessage.setText(getText(R.string.an_error_has_occurred));
+            mErrorMessage.setVisibility(View.VISIBLE);
         }
         mProgressLoading.setVisibility(View.INVISIBLE);
     }
