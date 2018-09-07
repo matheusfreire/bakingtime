@@ -39,6 +39,7 @@ import com.msf.bakingtime.model.Step;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+
 public class VideoFragment extends Fragment implements ExoPlayer.EventListener{
 
     private static final String NEXT_STEP = "nextStep";
@@ -146,7 +147,14 @@ public class VideoFragment extends Fragment implements ExoPlayer.EventListener{
 
     @Override
     public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
-
+        if((playbackState == ExoPlayer.STATE_READY) && playWhenReady){
+            mStateBuilder.setState(PlaybackStateCompat.STATE_PLAYING,
+                    mSimpleExoPlayer.getCurrentPosition(), 1f);
+        } else if((playbackState == ExoPlayer.STATE_READY)){
+            mStateBuilder.setState(PlaybackStateCompat.STATE_PAUSED,
+                    mSimpleExoPlayer.getCurrentPosition(), 1f);
+        }
+        mMediaSessionCompat.setPlaybackState(mStateBuilder.build());
     }
 
     @Override

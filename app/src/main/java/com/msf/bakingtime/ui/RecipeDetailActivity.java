@@ -2,6 +2,7 @@ package com.msf.bakingtime.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
@@ -14,12 +15,20 @@ import com.msf.bakingtime.model.Step;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.msf.bakingtime.ui.MainActivity.RECIPE_KEY;
+
 public class RecipeDetailActivity extends AppCompatActivity implements InstructionAdapter.OnInstructionListener {
+
+    public static final String FRAGMENT_KEY = "fragment_showing";
 
     @BindView(R.id.detail_toolbar)
     Toolbar toolbar;
 
+    private Recipe recipe;
+
     private boolean mTwoPane;
+
+    private Fragment fragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,9 +45,9 @@ public class RecipeDetailActivity extends AppCompatActivity implements Instructi
 
         if (savedInstanceState == null) {
             Bundle arguments = new Bundle();
-            Recipe recipe = getIntent().getParcelableExtra(MainActivity.RECIPE_KEY);
+            recipe = getIntent().getParcelableExtra(RECIPE_KEY);
             toolbar.setTitle(recipe.getName());
-            arguments.putParcelable(MainActivity.RECIPE_KEY, recipe);
+            arguments.putParcelable(RECIPE_KEY, recipe);
             arguments.putParcelableArrayList(MainActivity.INGREDIENTS_KEY, getIntent().getParcelableArrayListExtra(MainActivity.INGREDIENTS_KEY));
             arguments.putParcelableArrayList(MainActivity.STEPS_KEY, getIntent().getParcelableArrayListExtra(MainActivity.STEPS_KEY));
             RecipeDetailFragment fragment = RecipeDetailFragment.newInstance(this,arguments);
@@ -56,6 +65,7 @@ public class RecipeDetailActivity extends AppCompatActivity implements Instructi
     public void onBackPressed() {
         if (getSupportFragmentManager().getBackStackEntryCount() > 0){
             getSupportFragmentManager().popBackStack();
+            toolbar.setTitle(recipe.getName());
         } else {
             navigateUpTo(new Intent(this, MainActivity.class));
         }
@@ -64,7 +74,21 @@ public class RecipeDetailActivity extends AppCompatActivity implements Instructi
     @Override
     public void onItemClick(Step step) {
         VideoFragment videoFragment = VideoFragment.newInstance(step, null);
+        toolbar.setTitle(step.getShortDescription());
         getSupportFragmentManager().beginTransaction().addToBackStack(null)
                 .replace(R.id.recipe_detail_container, videoFragment).commit();
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        recipe = savedInstanceState.getParcelable(RECIPE_KEY);
+        toolbar.setTitle(recipe.getName());
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(RECIPE_KEY, recipe);
     }
 }
