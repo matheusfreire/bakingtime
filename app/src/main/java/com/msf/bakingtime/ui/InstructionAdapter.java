@@ -45,7 +45,7 @@ public class InstructionAdapter extends RecyclerView.Adapter<InstructionAdapter.
 
 
     public interface OnInstructionListener {
-        void onItemClick(Step step);
+        void onItemClick(Step step,Step nextStep);
     }
 
     @Override
@@ -70,7 +70,13 @@ public class InstructionAdapter extends RecyclerView.Adapter<InstructionAdapter.
         @Override
         public void onClick(View v) {
             Step instruction = getInstruction(getAdapterPosition());
-            mListener.onItemClick(instruction);
+            Step nextInstruction = null;
+            try{
+                nextInstruction = getInstruction(getAdapterPosition()+1);
+                mListener.onItemClick(instruction, nextInstruction);
+            } catch (ArrayIndexOutOfBoundsException a){
+                mListener.onItemClick(instruction, null);
+            }
         }
     }
 

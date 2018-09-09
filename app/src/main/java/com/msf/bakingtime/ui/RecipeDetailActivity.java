@@ -7,6 +7,7 @@ import android.support.v7.widget.Toolbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
+import android.widget.LinearLayout;
 
 import com.msf.bakingtime.R;
 import com.msf.bakingtime.model.Recipe;
@@ -30,9 +31,20 @@ public class RecipeDetailActivity extends AppCompatActivity implements Instructi
 
     private Fragment fragment;
 
+    @BindView(R.id.linear_layout_tablet)
+    LinearLayout linearLayoutTablet;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        recipe = getIntent().getParcelableExtra(RECIPE_KEY);
+        Bundle arguments = new Bundle();
+        arguments.putParcelable(RECIPE_KEY, recipe);
+        arguments.putParcelableArrayList(MainActivity.INGREDIENTS_KEY, getIntent().getParcelableArrayListExtra(MainActivity.INGREDIENTS_KEY));
+        arguments.putParcelableArrayList(MainActivity.STEPS_KEY, getIntent().getParcelableArrayListExtra(MainActivity.STEPS_KEY));
+        RecipeDetailFragment fragment = RecipeDetailFragment.newInstance(this,arguments);
+
         setContentView(R.layout.activity_recipe_detail);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
@@ -43,15 +55,14 @@ public class RecipeDetailActivity extends AppCompatActivity implements Instructi
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        if (savedInstanceState == null) {
-            Bundle arguments = new Bundle();
-            recipe = getIntent().getParcelableExtra(RECIPE_KEY);
-            toolbar.setTitle(recipe.getName());
-            arguments.putParcelable(RECIPE_KEY, recipe);
-            arguments.putParcelableArrayList(MainActivity.INGREDIENTS_KEY, getIntent().getParcelableArrayListExtra(MainActivity.INGREDIENTS_KEY));
-            arguments.putParcelableArrayList(MainActivity.STEPS_KEY, getIntent().getParcelableArrayListExtra(MainActivity.STEPS_KEY));
-            RecipeDetailFragment fragment = RecipeDetailFragment.newInstance(this,arguments);
-            getSupportFragmentManager().beginTransaction().add(R.id.recipe_detail_container, fragment).commit();
+        toolbar.setTitle(recipe.getName());
+        if(linearLayoutTablet == null) {
+            if (savedInstanceState == null) {
+                getSupportFragmentManager().beginTransaction().add(R.id.recipe_detail_container, fragment).commit();
+            }
+        } else {
+            getSupportFragmentManager().beginTransaction().replace(R.id.recipe_detail_container, fragment).commit();
+            mTwoPane = true;
         }
     }
 
@@ -72,11 +83,17 @@ public class RecipeDetailActivity extends AppCompatActivity implements Instructi
     }
 
     @Override
-    public void onItemClick(Step step) {
-        VideoFragment videoFragment = VideoFragment.newInstance(step, null);
-        toolbar.setTitle(step.getShortDescription());
-        getSupportFragmentManager().beginTransaction().addToBackStack(null)
-                .replace(R.id.recipe_detail_container, videoFragment).commit();
+    public void onItemClick(Step step, Step nextStep) {
+        VideoFragment videoFragment = VideoFragment.newInstance(step, nextStep);
+        if(mTwoPane){
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.recipe_detail_container, videoFragment)
+                    .commit();
+        } else {
+            toolbar.setTitle(step.getShortDescription());
+            getSupportFragmentManager().beginTransaction().addToBackStack(null)
+                    .replace(R.id.recipe_detail_container, videoFragment).commit();
+        }
     }
 
     @Override

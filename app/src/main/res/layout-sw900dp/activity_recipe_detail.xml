@@ -18,7 +18,7 @@
         app:titleTextColor="@android:color/white"/>
 
 
-    <LinearLayout
+    <LinearLayout android:id="@+id/linear_layout_tablet"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
@@ -31,9 +31,8 @@
         app:layout_constraintTop_toBottomOf="@+id/detail_toolbar"
         app:layout_constraintStart_toStartOf="parent">
 
-        <fragment
-            android:id="@+id/instruction_steps_fragment"
-            android:name="com.msf.bakingtime.ui.RecipeDetailFragment"
+        <FrameLayout
+            android:id="@+id/recipe_detail_container"
             android:layout_width="400dp"
             android:layout_height="match_parent" />
 

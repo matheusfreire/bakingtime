@@ -50,7 +50,7 @@ public class RecipeDetailFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (getArguments().containsKey(RECIPE_KEY)) {
+        if (getArguments() != null && getArguments().containsKey(RECIPE_KEY)) {
             recipe = getArguments().getParcelable(RECIPE_KEY);
             recipe.setIngredients(getArguments().<Ingredient>getParcelableArrayList(INGREDIENTS_KEY));
             recipe.setSteps(getArguments().<Step>getParcelableArrayList(STEPS_KEY));
@@ -81,8 +81,10 @@ public class RecipeDetailFragment extends Fragment {
 
     private void buildRecyclerInstruction() {
         setupRecyclerView();
-        InstructionAdapter instructionAdapter = new InstructionAdapter(recipe.getSteps(), mListenerVideo);
-        mRecyclerInstructions.setAdapter(instructionAdapter);
+        if(recipe != null){
+            InstructionAdapter instructionAdapter = new InstructionAdapter(recipe.getSteps(), mListenerVideo);
+            mRecyclerInstructions.setAdapter(instructionAdapter);
+        }
     }
 
     private void setupRecyclerView() {
@@ -93,9 +95,11 @@ public class RecipeDetailFragment extends Fragment {
     }
 
     private void buildListIngredients() {
-        IngredientsAdapter ingredientsAdapter = new IngredientsAdapter(getContext(),
-                R.layout.ingredient,recipe.getIngredients());
-        mListIngredients.setAdapter(ingredientsAdapter);
+        if(recipe != null){
+            IngredientsAdapter ingredientsAdapter = new IngredientsAdapter(getContext(),
+                    R.layout.ingredient,recipe.getIngredients());
+            mListIngredients.setAdapter(ingredientsAdapter);
+        }
     }
 
     @Override
