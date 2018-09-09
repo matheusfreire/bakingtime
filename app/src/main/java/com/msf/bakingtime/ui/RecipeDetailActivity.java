@@ -6,6 +6,8 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.LinearLayout;
 
@@ -67,8 +69,18 @@ public class RecipeDetailActivity extends AppCompatActivity implements Instructi
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_detail, menu);
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        onBackPressed();
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+            onBackPressed();
+        }
         return true;
     }
 
@@ -87,7 +99,7 @@ public class RecipeDetailActivity extends AppCompatActivity implements Instructi
         VideoFragment videoFragment = VideoFragment.newInstance(step, nextStep);
         if(mTwoPane){
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.recipe_detail_container, videoFragment)
+                    .replace(R.id.video_container, videoFragment)
                     .commit();
         } else {
             toolbar.setTitle(step.getShortDescription());
