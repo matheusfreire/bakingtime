@@ -74,7 +74,7 @@ public class InstructionAdapter extends RecyclerView.Adapter<InstructionAdapter.
             try{
                 nextInstruction = getInstruction(getAdapterPosition()+1);
                 mListener.onItemClick(instruction, nextInstruction);
-            } catch (ArrayIndexOutOfBoundsException a){
+            } catch (IndexOutOfBoundsException a){
                 mListener.onItemClick(instruction, null);
             }
         }
