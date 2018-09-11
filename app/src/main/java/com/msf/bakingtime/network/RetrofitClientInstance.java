@@ -7,16 +7,14 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClientInstance {
 
-    private static Retrofit retrofit;
+    private static Retrofit mRetrofit;
 
-    public static Retrofit getRetrofitInstance() {
-        if (retrofit == null) {
-            retrofit = new Retrofit.Builder()
-                    .baseUrl(BuildConfig.API_URL)
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build();
+    public static Retrofit getInstance() {
+        if (mRetrofit == null) {
+            mRetrofit = new Retrofit.Builder().baseUrl(BuildConfig.BASE_ENDPOINT)
+                    .addConverterFactory(GsonConverterFactory.create()).build();
         }
-        return retrofit;
+        return mRetrofit;
     }
 
 }

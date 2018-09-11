@@ -7,24 +7,23 @@ import android.support.annotation.NonNull;
 
 import com.msf.bakingtime.model.Recipe;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedList;
 
 import retrofit2.Call;
 
 public class RecipeListViewModelFactory extends ViewModelProvider.NewInstanceFactory {
 
-    private Call<ArrayList<Recipe>> mCallRecipes;
+    private Call<LinkedList<Recipe>> mFetchRecipe;
     private Application application;
 
-    public RecipeListViewModelFactory(Call<ArrayList<Recipe>> callRecipes, Application application){
-        this.mCallRecipes = callRecipes;
+    public RecipeListViewModelFactory(Application application, Call<LinkedList<Recipe>> callRecipes){
         this.application = application;
+        this.mFetchRecipe = callRecipes;
     }
 
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        return (T) new RecipeViewModel(application,mCallRecipes);
+        return (T) new RecipeViewModel(application,mFetchRecipe);
     }
 }

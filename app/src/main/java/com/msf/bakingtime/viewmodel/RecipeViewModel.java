@@ -7,7 +7,7 @@ import android.support.annotation.NonNull;
 
 import com.msf.bakingtime.model.Recipe;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import lombok.Getter;
@@ -17,27 +17,31 @@ import retrofit2.Response;
 
 public class RecipeViewModel extends AndroidViewModel {
 
+
+    private Call<LinkedList<Recipe>> mFetchRecipes;
+
     @Getter
-    private MutableLiveData<List<Recipe>> mutableLiveDataRecipes;
+    private MutableLiveData<LinkedList<Recipe>> mutableLiveDataRecipes;
 
 
-    public RecipeViewModel(@NonNull Application application, Call<ArrayList<Recipe>> mCallRecipes) {
+    RecipeViewModel(@NonNull Application application, Call<LinkedList<Recipe>> mCallRecipes) {
         super(application);
+        this.mFetchRecipes = mCallRecipes;
         if (mutableLiveDataRecipes == null) {
             mutableLiveDataRecipes = new MutableLiveData<>();
         }
-        getRecipesFromNet(mCallRecipes);
+        fetchRecipes();
     }
 
-    private void getRecipesFromNet(Call<ArrayList<Recipe>> mCallRecipes) {
-        mCallRecipes.enqueue(new Callback<ArrayList<Recipe>>() {
+    private void fetchRecipes() {
+        mFetchRecipes.enqueue(new Callback<LinkedList<Recipe>>() {
             @Override
-            public void onResponse(Call<ArrayList<Recipe>> call, Response<ArrayList<Recipe>> response) {
+            public void onResponse(Call<LinkedList<Recipe>> call, Response<LinkedList<Recipe>> response) {
                 mutableLiveDataRecipes.postValue(response.body());
             }
 
             @Override
-            public void onFailure(Call<ArrayList<Recipe>> call, Throwable t) {
+            public void onFailure(Call<LinkedList<Recipe>> call, Throwable t) {
                 mutableLiveDataRecipes.postValue(null);
             }
         });

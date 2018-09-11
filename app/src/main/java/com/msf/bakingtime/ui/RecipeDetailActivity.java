@@ -22,16 +22,12 @@ import static com.msf.bakingtime.ui.MainActivity.RECIPE_KEY;
 
 public class RecipeDetailActivity extends AppCompatActivity implements InstructionAdapter.OnInstructionListener {
 
-    public static final String FRAGMENT_KEY = "fragment_showing";
-
     @BindView(R.id.detail_toolbar)
     Toolbar toolbar;
 
     private Recipe recipe;
 
     private boolean mTwoPane;
-
-    private Fragment fragment;
 
     @BindView(R.id.linear_layout_tablet)
     LinearLayout linearLayoutTablet;

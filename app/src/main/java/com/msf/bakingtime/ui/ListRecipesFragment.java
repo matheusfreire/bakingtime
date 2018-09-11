@@ -28,6 +28,7 @@ import com.msf.bakingtime.network.RetrofitClientInstance;
 import com.msf.bakingtime.viewmodel.RecipeListViewModelFactory;
 import com.msf.bakingtime.viewmodel.RecipeViewModel;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -62,8 +63,8 @@ public class ListRecipesFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        RecipeEndPoint endPoint = RetrofitClientInstance.getRetrofitInstance().create(RecipeEndPoint.class);
-        RecipeListViewModelFactory factory = new RecipeListViewModelFactory(endPoint.callRecipes(), getActivity().getApplication());
+        RecipeEndPoint endPoint = RetrofitClientInstance.getInstance().create(RecipeEndPoint.class);
+        RecipeListViewModelFactory factory = new RecipeListViewModelFactory(getActivity().getApplication(),endPoint.fetchRecipes());
         recipeViewModel = ViewModelProviders.of(this, factory).get(RecipeViewModel.class);
         mProgressLoading.setVisibility(View.VISIBLE);
         mRecyclerViewRecipes.setVisibility(View.INVISIBLE);
@@ -76,9 +77,9 @@ public class ListRecipesFragment extends Fragment {
     }
 
     private void observableFromVM() {
-        recipeViewModel.getMutableLiveDataRecipes().observe(this, new Observer<List<Recipe>>() {
+        recipeViewModel.getMutableLiveDataRecipes().observe(this, new Observer<LinkedList<Recipe>>() {
             @Override
-            public void onChanged(@Nullable List<Recipe> recipes) {
+            public void onChanged(@Nullable LinkedList<Recipe> recipes) {
                 buildRecyclerOrErroView(recipes);
             }
         });
@@ -86,7 +87,7 @@ public class ListRecipesFragment extends Fragment {
 
     private void buildRecyclerOrErroView(@Nullable List<Recipe> recipes){
         if(recipes != null){
-            RecipeAdapter recipeAdapter = new RecipeAdapter(getContext(), recipes, (RecipeAdapter.OnRecipeListener) getActivity());
+            RecipeAdapter recipeAdapter = new RecipeAdapter(recipes, (RecipeAdapter.OnRecipeListener) getActivity());
             mRecyclerViewRecipes.setAdapter(recipeAdapter);
             mRecyclerViewRecipes.setVisibility(View.VISIBLE);
             mErrorMessage.setVisibility(View.INVISIBLE);

@@ -1,9 +1,11 @@
-package com.msf.bakingtime;
+package com.msf.bakingtime.widget;
 
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.widget.RemoteViews;
+
+import com.msf.bakingtime.R;
 
 /**
  * Implementation of App Widget functionality.
