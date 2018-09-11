@@ -2,14 +2,12 @@ package com.msf.bakingtime.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.Toolbar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.LinearLayout;
 
 import com.msf.bakingtime.R;
 import com.msf.bakingtime.model.Recipe;
@@ -29,8 +27,6 @@ public class RecipeDetailActivity extends AppCompatActivity implements Instructi
 
     private boolean mTwoPane;
 
-    @BindView(R.id.linear_layout_tablet)
-    LinearLayout linearLayoutTablet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +50,7 @@ public class RecipeDetailActivity extends AppCompatActivity implements Instructi
         }
 
         toolbar.setTitle(recipe.getName());
-        if(linearLayoutTablet == null) {
+        if(findViewById(R.id.linear_layout_tablet) == null) {
             if (savedInstanceState == null) {
                 getSupportFragmentManager().beginTransaction().add(R.id.recipe_detail_container, fragment).commit();
             }

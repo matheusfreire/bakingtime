@@ -12,11 +12,11 @@ import org.junit.runner.RunWith;
 
 import java.util.concurrent.TimeUnit;
 
-import static android.support.test.espresso.Espresso.*;
+import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
-import static android.support.test.espresso.matcher.ViewMatchers.withText;
 
 @RunWith(AndroidJUnit4.class)
 public class DetailActivityTest {
@@ -30,10 +30,10 @@ public class DetailActivityTest {
     public void testOnClick(){
         onView(withId(R.id.recipe_list)).perform(RecyclerViewActions.actionOnItemAtPosition(POSITION_TO_CLICK, click()));
         try {
-            Thread.sleep(TimeUnit.MINUTES.convert(3, TimeUnit.MILLISECONDS));
+            Thread.sleep(TimeUnit.MILLISECONDS.convert(3, TimeUnit.SECONDS));
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        onView(withId(R.id.ingredient_label)).check(matches(withText(R.string.ingredients)));
+        onView(withId(R.id.ingredient_label)).check(matches(isDisplayed()));
     }
 }
