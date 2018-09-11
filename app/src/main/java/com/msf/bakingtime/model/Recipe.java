@@ -1,5 +1,6 @@
 package com.msf.bakingtime.model;
 
+import android.arch.persistence.room.Entity;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -11,6 +12,7 @@ import java.util.TreeSet;
 import lombok.Data;
 
 @Data
+@Entity(tableName = "recipes")
 public class Recipe implements Parcelable {
 
     @SerializedName("id")

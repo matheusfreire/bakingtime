@@ -11,9 +11,6 @@ import android.widget.EditText;
 
 import com.msf.bakingtime.R;
 
-/**
- * The configuration screen for the {@link RecipeWidget RecipeWidget} AppWidget.
- */
 public class RecipeWidgetConfigureActivity extends Activity {
 
     private static final String PREFS_NAME = "com.msf.bakingtime.widget.RecipeWidget";
@@ -73,8 +70,6 @@ public class RecipeWidgetConfigureActivity extends Activity {
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
 
-        // Set the result to CANCELED.  This will cause the widget host to cancel
-        // out of the widget placement if the user presses the back button.
         setResult(RESULT_CANCELED);
 
         setContentView(R.layout.recipe_widget_configure);
