@@ -77,6 +77,7 @@ public class VideoFragment extends Fragment implements ExoPlayer.EventListener{
         if (getArguments().containsKey(CURRENT_STEP)) {
             step = getArguments().getParcelable(CURRENT_STEP);
         }
+        setRetainInstance(true);
     }
 
     @Override

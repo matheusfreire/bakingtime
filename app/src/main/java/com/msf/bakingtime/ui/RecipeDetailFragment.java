@@ -55,6 +55,7 @@ public class RecipeDetailFragment extends Fragment {
             recipe.setIngredients(getArguments().<Ingredient>getParcelableArrayList(INGREDIENTS_KEY));
             recipe.setSteps(getArguments().<Step>getParcelableArrayList(STEPS_KEY));
         }
+        setRetainInstance(true);
     }
 
     @Override
@@ -100,12 +101,6 @@ public class RecipeDetailFragment extends Fragment {
                     R.layout.ingredient,recipe.getIngredients());
             mListIngredients.setAdapter(ingredientsAdapter);
         }
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        mListenerVideo = (InstructionAdapter.OnInstructionListener) getActivity();
     }
 
 }
