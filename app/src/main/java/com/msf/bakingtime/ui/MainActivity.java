@@ -3,11 +3,16 @@ package com.msf.bakingtime.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.annotation.VisibleForTesting;
+import android.support.test.espresso.IdlingResource;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import com.msf.bakingtime.R;
 import com.msf.bakingtime.model.Recipe;
+import com.msf.bakingtime.util.IdlingResourceImp;
 
 import java.util.ArrayList;
 
@@ -23,6 +28,9 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.OnR
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+
+    @Nullable
+    private IdlingResourceImp mIdlingResource;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,5 +49,14 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.OnR
         final Intent intent = new Intent(this, RecipeDetailActivity.class);
         intent.putExtras(b);
         startActivity(intent);
+    }
+
+    @VisibleForTesting
+    @NonNull
+    public IdlingResourceImp getIdlingResource() {
+        if (mIdlingResource == null) {
+            mIdlingResource = new IdlingResourceImp();
+        }
+        return mIdlingResource;
     }
 }

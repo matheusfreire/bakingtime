@@ -1,5 +1,7 @@
 package com.msf.bakingtime;
 
+import android.support.test.espresso.IdlingRegistry;
+import android.support.test.espresso.IdlingResource;
 import android.support.test.espresso.NoMatchingViewException;
 import android.support.test.espresso.ViewAssertion;
 import android.support.test.rule.ActivityTestRule;
@@ -9,6 +11,8 @@ import android.view.View;
 
 import com.msf.bakingtime.ui.MainActivity;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,17 +35,26 @@ public class MainActivityTest {
     @Rule
     public ActivityTestRule<MainActivity> mainActivityActivityTestRule = new ActivityTestRule<>(MainActivity.class);
 
+    private IdlingResource mIdlingResource;
+
+    @Before
+    public void registerIdlingResource() {
+        mIdlingResource = mainActivityActivityTestRule.getActivity().getIdlingResource();
+        // To prove that the test fails, omit this call:
+        IdlingRegistry.getInstance().register(mIdlingResource);
+    }
 
     @Test
     public void testQuantityOnRecycler(){
-        try {
-            Thread.sleep(TimeUnit.MILLISECONDS.convert(10, TimeUnit.MILLISECONDS));
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        onData(anything()).inAdapterView(withId(R.id.recipe_list)).check(new ItemAssertionOnRecycler(RECIPES_EXPECTED));
+        onView(withId(R.id.recipe_list)).check(new ItemAssertionOnRecycler(RECIPES_EXPECTED));
     }
 
+    @After
+    public void unregisterIdlingResource() {
+        if (mIdlingResource != null) {
+            IdlingRegistry.getInstance().unregister(mIdlingResource);
+        }
+    }
 
     private class ItemAssertionOnRecycler implements ViewAssertion {
         private final int mExpectedQuantity;

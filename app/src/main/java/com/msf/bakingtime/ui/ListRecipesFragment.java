@@ -1,5 +1,6 @@
 package com.msf.bakingtime.ui;
 
+import android.annotation.SuppressLint;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
@@ -25,6 +26,8 @@ import com.msf.bakingtime.R;
 import com.msf.bakingtime.model.Recipe;
 import com.msf.bakingtime.network.RecipeEndPoint;
 import com.msf.bakingtime.network.RetrofitClientInstance;
+import com.msf.bakingtime.util.Delayer;
+import com.msf.bakingtime.util.IdlingResourceImp;
 import com.msf.bakingtime.viewmodel.RecipeListViewModelFactory;
 import com.msf.bakingtime.viewmodel.RecipeViewModel;
 
@@ -34,7 +37,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class ListRecipesFragment extends Fragment {
+
+public class ListRecipesFragment extends Fragment implements Delayer.DelayerCallback{
 
     @BindView(R.id.recipe_list)
     RecyclerView mRecyclerViewRecipes;
@@ -85,6 +89,7 @@ public class ListRecipesFragment extends Fragment {
         });
     }
 
+    @SuppressLint("VisibleForTests")
     private void buildRecyclerOrErroView(@Nullable List<Recipe> recipes){
         if(recipes != null){
             RecipeAdapter recipeAdapter = new RecipeAdapter(recipes, (RecipeAdapter.OnRecipeListener) getActivity());
@@ -98,6 +103,11 @@ public class ListRecipesFragment extends Fragment {
             mErrorMessage.setVisibility(View.VISIBLE);
         }
         mProgressLoading.setVisibility(View.INVISIBLE);
+        Delayer.processMessage(true, this, getMainActivity().getIdlingResource());
+    }
+
+    private MainActivity getMainActivity() {
+        return (MainActivity) getActivity();
     }
 
     private void showNetworkOffline() {
@@ -133,6 +143,11 @@ public class ListRecipesFragment extends Fragment {
         if (!(context instanceof RecipeAdapter.OnRecipeListener)) {
             throw new RuntimeException(context.toString() + " must implement OnFragmentInteractionListener");
         }
+    }
+
+    @Override
+    public void onDone(boolean finalized) {
+
     }
 
 }
