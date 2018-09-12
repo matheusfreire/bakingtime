@@ -1,36 +1,37 @@
 package com.msf.bakingtime.viewmodel;
 
-import android.app.Application;
-import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.MutableLiveData;
-import android.support.annotation.NonNull;
+import android.arch.lifecycle.ViewModel;
 
 import com.msf.bakingtime.model.Recipe;
 
 import java.util.LinkedList;
-import java.util.List;
 
 import lombok.Getter;
+import lombok.Setter;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class RecipeViewModel extends AndroidViewModel {
+public class RecipeViewModel extends ViewModel {
 
-
+    @Setter
     private Call<LinkedList<Recipe>> mFetchRecipes;
 
     @Getter
     private MutableLiveData<LinkedList<Recipe>> mutableLiveDataRecipes;
 
 
-    RecipeViewModel(@NonNull Application application, Call<LinkedList<Recipe>> mCallRecipes) {
-        super(application);
-        this.mFetchRecipes = mCallRecipes;
+    RecipeViewModel(Call<LinkedList<Recipe>> mCallRecipes) {
+        setMFetchRecipes(mCallRecipes);
+        initMultable();
+        fetchRecipes();
+    }
+
+    private void initMultable() {
         if (mutableLiveDataRecipes == null) {
             mutableLiveDataRecipes = new MutableLiveData<>();
         }
-        fetchRecipes();
     }
 
     private void fetchRecipes() {

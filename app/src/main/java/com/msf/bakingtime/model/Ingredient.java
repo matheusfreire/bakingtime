@@ -3,6 +3,8 @@ package com.msf.bakingtime.model;
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
@@ -12,12 +14,13 @@ import com.google.gson.annotations.SerializedName;
 import lombok.Data;
 
 @Data
-@Entity(tableName = "recipes",foreignKeys = @ForeignKey(entity = Recipe.class,
+@Entity(tableName = "ingredients",foreignKeys = @ForeignKey(entity = Recipe.class,
         parentColumns = "id",
         childColumns = "recipe_id"))
 public class Ingredient implements Parcelable {
 
     @SerializedName("quantity")
+    @PrimaryKey
     private double quantity;
 
     @SerializedName("measure")
@@ -29,6 +32,15 @@ public class Ingredient implements Parcelable {
     @ColumnInfo(name = "recipe_id")
     public int recipeId;
 
+
+    public Ingredient(double quantity, String measure, String ingredient, int recipeId) {
+        this.quantity = quantity;
+        this.measure = measure;
+        this.ingredient = ingredient;
+        this.recipeId = recipeId;
+    }
+
+    @Ignore
     protected Ingredient(Parcel in) {
         quantity = in.readDouble();
         measure = in.readString();

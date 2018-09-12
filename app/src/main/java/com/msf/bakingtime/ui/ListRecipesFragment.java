@@ -64,7 +64,7 @@ public class ListRecipesFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         RecipeEndPoint endPoint = RetrofitClientInstance.getInstance().create(RecipeEndPoint.class);
-        RecipeListViewModelFactory factory = new RecipeListViewModelFactory(getActivity().getApplication(),endPoint.fetchRecipes());
+        RecipeListViewModelFactory factory = new RecipeListViewModelFactory(endPoint.fetchRecipes());
         recipeViewModel = ViewModelProviders.of(this, factory).get(RecipeViewModel.class);
         mProgressLoading.setVisibility(View.VISIBLE);
         mRecyclerViewRecipes.setVisibility(View.INVISIBLE);

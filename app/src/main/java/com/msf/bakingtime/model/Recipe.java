@@ -1,6 +1,8 @@
 package com.msf.bakingtime.model;
 
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -16,17 +18,31 @@ import lombok.Data;
 public class Recipe implements Parcelable {
 
     @SerializedName("id")
+    @PrimaryKey
     private long id;
 
     @SerializedName("name")
     private String name;
 
     @SerializedName("ingredients")
+    @Ignore
     private List<Ingredient> ingredients;
 
     @SerializedName("steps")
+    @Ignore
     private List<Step> steps;
 
+    @Ignore
+    public Recipe(){
+
+    }
+
+    public Recipe(long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    @Ignore
     protected Recipe(Parcel in) {
         id = in.readLong();
         name = in.readString();

@@ -15,9 +15,12 @@ import org.junit.runner.RunWith;
 
 import java.util.concurrent.TimeUnit;
 
+import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.matcher.ViewMatchers.assertThat;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static org.hamcrest.CoreMatchers.anything;
 import static org.hamcrest.CoreMatchers.is;
 
 @RunWith(AndroidJUnit4.class)
@@ -32,11 +35,11 @@ public class MainActivityTest {
     @Test
     public void testQuantityOnRecycler(){
         try {
-            Thread.sleep(TimeUnit.MILLISECONDS.convert(3, TimeUnit.MILLISECONDS));
+            Thread.sleep(TimeUnit.MILLISECONDS.convert(10, TimeUnit.MILLISECONDS));
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        onView(withId(R.id.recipe_list)).check(new ItemAssertionOnRecycler(RECIPES_EXPECTED));
+        onData(anything()).inAdapterView(withId(R.id.recipe_list)).check(new ItemAssertionOnRecycler(RECIPES_EXPECTED));
     }
 
 
