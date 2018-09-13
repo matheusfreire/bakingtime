@@ -30,10 +30,10 @@ public class Ingredient implements Parcelable {
     private String ingredient;
 
     @ColumnInfo(name = "recipe_id")
-    public int recipeId;
+    public long recipeId;
 
 
-    public Ingredient(double quantity, String measure, String ingredient, int recipeId) {
+    public Ingredient(double quantity, String measure, String ingredient, long recipeId) {
         this.quantity = quantity;
         this.measure = measure;
         this.ingredient = ingredient;
@@ -45,7 +45,7 @@ public class Ingredient implements Parcelable {
         quantity = in.readDouble();
         measure = in.readString();
         ingredient = in.readString();
-        recipeId = in.readInt();
+        recipeId = in.readLong();
     }
 
     public static final Creator<Ingredient> CREATOR = new Creator<Ingredient>() {
@@ -70,6 +70,6 @@ public class Ingredient implements Parcelable {
         dest.writeDouble(quantity);
         dest.writeString(measure);
         dest.writeString(ingredient);
-        dest.writeInt(recipeId);
+        dest.writeLong(recipeId);
     }
 }

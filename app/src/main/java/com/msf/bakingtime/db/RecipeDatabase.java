@@ -6,6 +6,7 @@ import android.arch.persistence.room.RoomDatabase;
 import android.arch.persistence.room.TypeConverters;
 import android.content.Context;
 
+import com.msf.bakingtime.dao.IngredientDao;
 import com.msf.bakingtime.dao.RecipeDao;
 import com.msf.bakingtime.model.Ingredient;
 import com.msf.bakingtime.model.Recipe;
@@ -30,4 +31,5 @@ public abstract class RecipeDatabase extends RoomDatabase {
     }
 
     public abstract RecipeDao recipeDao();
+    public abstract IngredientDao ingredientDao();
 }

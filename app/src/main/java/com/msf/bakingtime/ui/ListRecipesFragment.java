@@ -1,6 +1,7 @@
 package com.msf.bakingtime.ui;
 
 import android.annotation.SuppressLint;
+import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
@@ -23,11 +24,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.msf.bakingtime.R;
+import com.msf.bakingtime.db.RecipeDatabase;
+import com.msf.bakingtime.model.Ingredient;
 import com.msf.bakingtime.model.Recipe;
 import com.msf.bakingtime.network.RecipeEndPoint;
 import com.msf.bakingtime.network.RetrofitClientInstance;
+import com.msf.bakingtime.util.AppExecutor;
 import com.msf.bakingtime.util.Delayer;
-import com.msf.bakingtime.util.IdlingResourceImp;
 import com.msf.bakingtime.viewmodel.RecipeListViewModelFactory;
 import com.msf.bakingtime.viewmodel.RecipeViewModel;
 
@@ -54,6 +57,10 @@ public class ListRecipesFragment extends Fragment implements Delayer.DelayerCall
 
     private RecyclerView.LayoutManager mLayoutManager;
 
+    private RecipeDatabase database;
+
+    private LiveData<List<Recipe>> recipeLiveData;
+
     public ListRecipesFragment() {
     }
 
@@ -75,9 +82,25 @@ public class ListRecipesFragment extends Fragment implements Delayer.DelayerCall
         if(isOnline()){
             observableFromVM();
         } else {
-            showNetworkOffline();
+            treatNetworkOffline();
         }
         setupRecyclerView();
+    }
+
+    private void addRecipeAndIngredientsToDb(final List<Recipe> recipes) {
+        database = RecipeDatabase.getInstance(getContext());
+        AppExecutor.getInstance().getDbIo().execute(new Runnable() {
+            @Override
+            public void run() {
+                for(Recipe recipe : recipes){
+                    for(Ingredient ingredient : recipe.getIngredients()){
+                        ingredient.setRecipeId(recipe.getId());
+                    }
+                    database.recipeDao().setIngredientDao(database.ingredientDao());
+                    database.recipeDao().insertRecipeAndIngredients(recipe);
+                }
+            }
+        });
     }
 
     private void observableFromVM() {
@@ -92,30 +115,46 @@ public class ListRecipesFragment extends Fragment implements Delayer.DelayerCall
     @SuppressLint("VisibleForTests")
     private void buildRecyclerOrErroView(@Nullable List<Recipe> recipes){
         if(recipes != null){
-            RecipeAdapter recipeAdapter = new RecipeAdapter(recipes, (RecipeAdapter.OnRecipeListener) getActivity());
-            mRecyclerViewRecipes.setAdapter(recipeAdapter);
-            mRecyclerViewRecipes.setVisibility(View.VISIBLE);
-            mErrorMessage.setVisibility(View.INVISIBLE);
+            buildAdapter(recipes);
         } else {
-            mRecyclerViewRecipes.setAdapter(null);
-            mRecyclerViewRecipes.setVisibility(View.INVISIBLE);
-            mErrorMessage.setText(getText(R.string.an_error_has_occurred));
-            mErrorMessage.setVisibility(View.VISIBLE);
+            addRecipeAndIngredientsToDb(recipes);
         }
+    }
+
+    private void buildAdapter(@NonNull List<Recipe> recipes) {
+        RecipeAdapter recipeAdapter = new RecipeAdapter(recipes, (RecipeAdapter.OnRecipeListener) getActivity());
+        mRecyclerViewRecipes.setAdapter(recipeAdapter);
+        mRecyclerViewRecipes.setVisibility(View.VISIBLE);
+        mErrorMessage.setVisibility(View.INVISIBLE);
         mProgressLoading.setVisibility(View.INVISIBLE);
-        Delayer.processMessage(true, this, getMainActivity().getIdlingResource());
     }
 
     private MainActivity getMainActivity() {
         return (MainActivity) getActivity();
     }
 
-    private void showNetworkOffline() {
-        mErrorMessage.setText(R.string.no_network);
-        mRecyclerViewRecipes.setAdapter(null);
-        mRecyclerViewRecipes.setVisibility(View.INVISIBLE);
-        Snackbar mySnackbar = Snackbar.make(this.getView(),R.string.try_again, Snackbar.LENGTH_SHORT);
-        mySnackbar.show();
+    private void treatNetworkOffline() {
+        database = RecipeDatabase.getInstance(getContext());
+        recipeLiveData = database.recipeDao().loadRecipes();
+        recipeLiveData.observe(this, new Observer<List<Recipe>>() {
+            @Override
+            public void onChanged(@Nullable List<Recipe> recipes) {
+                buildObservableLiveData(recipes);
+            }
+        });
+    }
+
+    private void buildObservableLiveData(List<Recipe> list){
+        if(list != null){
+            buildAdapter(list);
+        } else {
+            mErrorMessage.setText(R.string.no_network);
+            mRecyclerViewRecipes.setAdapter(null);
+            mRecyclerViewRecipes.setVisibility(View.INVISIBLE);
+            Snackbar mySnackbar = Snackbar.make(this.getView(),R.string.try_again, Snackbar.LENGTH_SHORT);
+            mySnackbar.show();
+        }
+        Delayer.processMessage(true, this, getMainActivity().getIdlingResource());
     }
 
     private void setupRecyclerView() {
