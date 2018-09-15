@@ -5,17 +5,10 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,12 +29,13 @@ import com.msf.bakingtime.viewmodel.RecipeViewModel;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
-public class ListRecipesFragment extends Fragment implements Delayer.DelayerCallback{
+public class ListRecipesFragment extends FragmentsRecipe implements Delayer.DelayerCallback{
 
     @BindView(R.id.recipe_list)
     RecyclerView mRecyclerViewRecipes;
@@ -55,17 +49,12 @@ public class ListRecipesFragment extends Fragment implements Delayer.DelayerCall
 
     private RecipeViewModel recipeViewModel;
 
-    private RecyclerView.LayoutManager mLayoutManager;
-
     private RecipeDatabase database;
 
-    private LiveData<List<Recipe>> recipeLiveData;
-
-    public ListRecipesFragment() {
-    }
+    public ListRecipesFragment() {}
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_list_recipes, container, false);
         ButterKnife.bind(this, view);
         return view;
@@ -84,7 +73,7 @@ public class ListRecipesFragment extends Fragment implements Delayer.DelayerCall
         } else {
             treatNetworkOffline();
         }
-        setupRecyclerView();
+        setupRecyclerView(mRecyclerViewRecipes);
     }
 
     private void addRecipeAndIngredientsToDb(final List<Recipe> recipes) {
@@ -135,7 +124,7 @@ public class ListRecipesFragment extends Fragment implements Delayer.DelayerCall
 
     private void treatNetworkOffline() {
         database = RecipeDatabase.getInstance(getContext());
-        recipeLiveData = database.recipeDao().loadRecipes();
+        LiveData<List<Recipe>> recipeLiveData = database.recipeDao().loadRecipes();
         recipeLiveData.observe(this, new Observer<List<Recipe>>() {
             @Override
             public void onChanged(@Nullable List<Recipe> recipes) {
@@ -144,6 +133,7 @@ public class ListRecipesFragment extends Fragment implements Delayer.DelayerCall
         });
     }
 
+    @SuppressLint("VisibleForTests")
     private void buildObservableLiveData(List<Recipe> list){
         if(list != null){
             buildAdapter(list);
@@ -151,31 +141,12 @@ public class ListRecipesFragment extends Fragment implements Delayer.DelayerCall
             mErrorMessage.setText(R.string.no_network);
             mRecyclerViewRecipes.setAdapter(null);
             mRecyclerViewRecipes.setVisibility(View.INVISIBLE);
-            Snackbar mySnackbar = Snackbar.make(this.getView(),R.string.try_again, Snackbar.LENGTH_SHORT);
+            Snackbar mySnackbar = Snackbar.make(Objects.requireNonNull(this.getView()),R.string.try_again, Snackbar.LENGTH_SHORT);
             mySnackbar.show();
         }
         Delayer.processMessage(true, this, getMainActivity().getIdlingResource());
     }
 
-    private void setupRecyclerView() {
-        mLayoutManager = new LinearLayoutManager(getContext());
-        mRecyclerViewRecipes.setLayoutManager(mLayoutManager);
-        mRecyclerViewRecipes.setItemAnimator(new DefaultItemAnimator());
-        mRecyclerViewRecipes.setHasFixedSize(true);
-        setUpItemDecoration();
-    }
-
-    private void setUpItemDecoration() {
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(),mLayoutManager.getLayoutDirection());
-        dividerItemDecoration.setDrawable(ContextCompat.getDrawable(getContext(), R.drawable.divider_recycler));
-        mRecyclerViewRecipes.addItemDecoration(dividerItemDecoration);
-    }
-
-    private boolean isOnline(){
-        ConnectivityManager connectivityManager = (ConnectivityManager) getActivity().getApplication().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-        return networkInfo != null && networkInfo.isConnected();
-    }
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);

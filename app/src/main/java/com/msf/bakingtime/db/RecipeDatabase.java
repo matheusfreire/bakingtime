@@ -16,7 +16,7 @@ import com.msf.bakingtime.model.Recipe;
 public abstract class RecipeDatabase extends RoomDatabase {
 
     private static final Object LOCK = new Object();
-    private static final String DATABASE_NAME = "films";
+    private static final String DATABASE_NAME = "recipes";
     private static RecipeDatabase sInstance;
 
     public static RecipeDatabase getInstance(Context context) {

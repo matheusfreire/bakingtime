@@ -39,7 +39,8 @@
             android:layout_height="wrap_content"
             android:dividerHeight="1dp"
             tools:listitem="@layout/ingredient"
-            android:paddingLeft="@dimen/padding_10dp"/>
+            android:paddingLeft="@dimen/padding_10dp"
+            android:clickable="false"/>
     </android.support.v7.widget.CardView>
 
     <TextView android:id="@+id/instructions"
@@ -64,6 +65,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/instructions"
         tools:listitem="@layout/ingredient"/>
+
+    <TextView
+        android:id="@+id/no_network_detected"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:padding="16dp"
+        android:text="@string/no_network_detected"
+        android:textSize="20sp"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/instructions"/>
 
 
 </android.support.constraint.ConstraintLayout>

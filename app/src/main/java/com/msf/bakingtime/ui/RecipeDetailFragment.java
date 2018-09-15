@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.msf.bakingtime.R;
 import com.msf.bakingtime.model.Ingredient;
@@ -25,7 +26,7 @@ import static com.msf.bakingtime.ui.MainActivity.INGREDIENTS_KEY;
 import static com.msf.bakingtime.ui.MainActivity.RECIPE_KEY;
 import static com.msf.bakingtime.ui.MainActivity.STEPS_KEY;
 
-public class RecipeDetailFragment extends Fragment {
+public class RecipeDetailFragment extends FragmentsRecipe {
     private Recipe recipe;
 
     @BindView(R.id.list_ingredients)
@@ -33,6 +34,9 @@ public class RecipeDetailFragment extends Fragment {
 
     @BindView(R.id.recyclerViewInstructions)
     RecyclerView mRecyclerInstructions;
+
+    @BindView(R.id.no_network_detected)
+    TextView mTextViewNoNetwork;
 
     private InstructionAdapter.OnInstructionListener mListenerVideo;
 
@@ -81,18 +85,13 @@ public class RecipeDetailFragment extends Fragment {
     }
 
     private void buildRecyclerInstruction() {
-        setupRecyclerView();
-        if(recipe != null){
+        setupRecyclerView(mRecyclerInstructions);
+        if(recipe != null && isOnline()){
             InstructionAdapter instructionAdapter = new InstructionAdapter(recipe.getSteps(), mListenerVideo);
             mRecyclerInstructions.setAdapter(instructionAdapter);
+        } else if(!isOnline()){
+            mTextViewNoNetwork.setVisibility(View.VISIBLE);
         }
-    }
-
-    private void setupRecyclerView() {
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        mRecyclerInstructions.setLayoutManager(linearLayoutManager);
-        mRecyclerInstructions.setItemAnimator(new DefaultItemAnimator());
-        mRecyclerInstructions.setHasFixedSize(true);
     }
 
     private void buildListIngredients() {
