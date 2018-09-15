@@ -14,5 +14,6 @@
     <string name="configure">Configure</string>
     <string name="add_widget">Add widget</string>
     <string name="no_network_detected">No network detected, please fix it</string>
+    <string name="zero_recipes">There is no recipes saved in your cell, please connect to internet to store new recipes</string>
 
 </resources>

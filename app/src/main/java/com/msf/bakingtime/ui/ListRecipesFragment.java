@@ -105,7 +105,6 @@ public class ListRecipesFragment extends FragmentsRecipe implements Delayer.Dela
     private void buildRecyclerOrErroView(@Nullable List<Recipe> recipes){
         if(recipes != null){
             buildAdapter(recipes);
-        } else {
             addRecipeAndIngredientsToDb(recipes);
         }
     }
@@ -136,6 +135,12 @@ public class ListRecipesFragment extends FragmentsRecipe implements Delayer.Dela
     @SuppressLint("VisibleForTests")
     private void buildObservableLiveData(List<Recipe> list){
         if(list != null){
+            if(list.isEmpty()){
+                mErrorMessage.setText(R.string.zero_recipes);
+                mRecyclerViewRecipes.setAdapter(null);
+                mRecyclerViewRecipes.setVisibility(View.INVISIBLE);
+                return;
+            }
             buildAdapter(list);
         } else {
             mErrorMessage.setText(R.string.no_network);
