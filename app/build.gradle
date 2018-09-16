@@ -50,6 +50,7 @@ dependencies {
     implementation "com.jakewharton:butterknife:${butterKnife}"
     implementation "com.android.support:support-v4:${androidSupport}"
     implementation 'com.google.android.exoplayer:exoplayer:r2.2.0'
+    implementation 'com.facebook.stetho:stetho:1.5.0'
     compileOnly "org.projectlombok:lombok:${lombok}"
     annotationProcessor "android.arch.lifecycle:compiler:${arch_version}"
     annotationProcessor "org.projectlombok:lombok:${lombok}"

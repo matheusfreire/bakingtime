@@ -30,6 +30,7 @@ import com.msf.bakingtime.viewmodel.RecipeViewModel;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -81,9 +82,11 @@ public class ListRecipesFragment extends FragmentsRecipe implements Delayer.Dela
         AppExecutor.getInstance().getDbIo().execute(new Runnable() {
             @Override
             public void run() {
+                database.ingredientDao().deleteIngredients();
                 for(Recipe recipe : recipes){
                     for(Ingredient ingredient : recipe.getIngredients()){
                         ingredient.setRecipeId(recipe.getId());
+                        ingredient.setHashId(UUID.randomUUID().toString());
                     }
                     database.recipeDao().setIngredientDao(database.ingredientDao());
                     database.recipeDao().insertRecipeAndIngredients(recipe);

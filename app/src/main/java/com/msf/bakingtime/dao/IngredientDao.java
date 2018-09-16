@@ -21,5 +21,6 @@ public interface IngredientDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertIngredients(List<Ingredient> ingredients);
 
-
+    @Query("DELETE FROM ingredients")
+    void deleteIngredients();
 }

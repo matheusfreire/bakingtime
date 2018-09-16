@@ -19,8 +19,11 @@ import lombok.Data;
         childColumns = "recipe_id"))
 public class Ingredient implements Parcelable {
 
-    @SerializedName("quantity")
     @PrimaryKey
+    @NonNull
+    private String hashId;
+
+    @SerializedName("quantity")
     private double quantity;
 
     @SerializedName("measure")
