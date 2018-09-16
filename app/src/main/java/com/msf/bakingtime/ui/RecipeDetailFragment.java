@@ -1,5 +1,6 @@
 package com.msf.bakingtime.ui;
 
+import android.arch.lifecycle.Observer;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -15,9 +16,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.msf.bakingtime.R;
+import com.msf.bakingtime.db.RecipeDatabase;
 import com.msf.bakingtime.model.Ingredient;
 import com.msf.bakingtime.model.Recipe;
 import com.msf.bakingtime.model.Step;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -39,6 +43,8 @@ public class RecipeDetailFragment extends FragmentsRecipe {
     TextView mTextViewNoNetwork;
 
     private InstructionAdapter.OnInstructionListener mListenerVideo;
+
+    private RecipeDatabase database;
 
     public RecipeDetailFragment() {
     }
@@ -96,10 +102,24 @@ public class RecipeDetailFragment extends FragmentsRecipe {
 
     private void buildListIngredients() {
         if(recipe != null){
-            IngredientsAdapter ingredientsAdapter = new IngredientsAdapter(getContext(),
-                    R.layout.ingredient,recipe.getIngredients());
-            mListIngredients.setAdapter(ingredientsAdapter);
+            if(isOnline()){
+                buildIngredientsAdapter(recipe.getIngredients());
+            } else {
+                database = RecipeDatabase.getInstance(getContext());
+                database.ingredientDao().loadIngredients(recipe.getId()).observe(this, new Observer<List<Ingredient>>() {
+                    @Override
+                    public void onChanged(@Nullable List<Ingredient> ingredientList) {
+                        buildIngredientsAdapter(ingredientList);
+                    }
+                });
+            }
         }
+    }
+
+    private void buildIngredientsAdapter(List<Ingredient> ingredientList) {
+        IngredientsAdapter ingredientsAdapter = new IngredientsAdapter(getContext(),
+                R.layout.ingredient,ingredientList);
+        mListIngredients.setAdapter(ingredientsAdapter);
     }
 
 }

@@ -15,13 +15,11 @@ import java.util.List;
 @Dao
 public interface IngredientDao {
 
-    @Query("SELECT * FROM ingredients")
-    LiveData<List<Ingredient>> loadIngredients();
+    @Query("SELECT * FROM ingredients where recipe_id = :recipeId")
+    LiveData<List<Ingredient>> loadIngredients(long recipeId);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertIngredients(List<Ingredient> ingredients);
 
-    @Delete
-    void deleteIngredient(Ingredient ingredient);
 
 }

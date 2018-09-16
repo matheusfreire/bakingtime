@@ -1,12 +1,19 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
     android:padding="@dimen/widget_margin">
 
-    <ImageView
-        android:layout_width="120dp"
-        android:layout_height="120dp"
-        android:src="@drawable/ic_book"
-        android:contentDescription="@string/app_name"/>
+    <TextView
+        android:id="@+id/recipe_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_margin="8dp"
+        android:contentDescription="@string/ingredients"
+        android:text="@string/ingredients"
+        android:textColor="@android:color/black"
+        android:textSize="24sp"/>
 
 </RelativeLayout>

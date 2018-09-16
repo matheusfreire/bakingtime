@@ -6,13 +6,13 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
-import android.support.test.espresso.IdlingResource;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import com.msf.bakingtime.R;
 import com.msf.bakingtime.model.Recipe;
 import com.msf.bakingtime.util.IdlingResourceImp;
+import com.msf.bakingtime.widget.SaveIngredientsWidgetService;
 
 import java.util.ArrayList;
 
@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.OnR
         final Intent intent = new Intent(this, RecipeDetailActivity.class);
         intent.putExtras(b);
         startActivity(intent);
+        SaveIngredientsWidgetService.startActionUpdateTextIngredients(this, recipe.getId());
     }
 
     @VisibleForTesting

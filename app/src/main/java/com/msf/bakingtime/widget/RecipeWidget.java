@@ -3,6 +3,7 @@ package com.msf.bakingtime.widget;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
+import android.content.Intent;
 import android.widget.RemoteViews;
 
 import com.msf.bakingtime.R;
@@ -10,11 +11,10 @@ import com.msf.bakingtime.R;
 public class RecipeWidget extends AppWidgetProvider {
 
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager, int appWidgetId) {
-
-        CharSequence widgetText = RecipeWidgetConfigureActivity.loadTitlePref(context, appWidgetId);
-        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.recipe_widget);
-        views.setTextViewText(R.id.appwidget_text, widgetText);
-
+        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.ingredients_view);
+        Intent intent = new Intent(context, RecipeService.class);
+        views.setRemoteAdapter(R.id.txt_ingredients_widget, intent);
+        views.setEmptyView(R.id.txt_ingredients_widget, R.id.txt_pick_recipe);
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }
 
@@ -26,18 +26,17 @@ public class RecipeWidget extends AppWidgetProvider {
     }
 
     @Override
-    public void onDeleted(Context context, int[] appWidgetIds) {
-        for (int appWidgetId : appWidgetIds) {
-            RecipeWidgetConfigureActivity.deleteTitlePref(context, appWidgetId);
-        }
-    }
-
-    @Override
     public void onEnabled(Context context) {
     }
 
     @Override
     public void onDisabled(Context context) {
+    }
+
+    public static void updateIngredientsWidget(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+        for (int appWidgetId : appWidgetIds) {
+            updateAppWidget(context, appWidgetManager, appWidgetId);
+        }
     }
 }
 
