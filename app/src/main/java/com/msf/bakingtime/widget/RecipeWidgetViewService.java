@@ -1,7 +1,9 @@
 package com.msf.bakingtime.widget;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
@@ -12,16 +14,23 @@ import com.msf.bakingtime.model.Ingredient;
 
 import java.util.List;
 
-public class RecipeViewFactory implements RemoteViewsService.RemoteViewsFactory {
+public class RecipeWidgetViewService extends RemoteViewsService {
+    @Override
+    public RemoteViewsFactory onGetViewFactory(Intent intent) {
+        return new RecipeViewFactory(this.getApplicationContext());
+    }
+}
 
-    public static final String KEY_RECIPE = "RECIPE_CHOOSEN";
+class RecipeViewFactory implements RemoteViewsService.RemoteViewsFactory {
+
     private Context mContext;
     private List<Ingredient> mIngredients;
     private RecipeDatabase database;
 
-    public RecipeViewFactory(Context mContext) {
+    RecipeViewFactory(Context mContext) {
         this.mContext = mContext;
         database = RecipeDatabase.getInstance(mContext);
+        Log.d(RecipeViewFactory.class.getSimpleName(), "Cheguei no factory");
     }
 
     @Override
@@ -31,12 +40,13 @@ public class RecipeViewFactory implements RemoteViewsService.RemoteViewsFactory 
 
     @Override
     public void onDataSetChanged() {
-        if(database == null){
+        if (database == null) {
             return;
         }
         SharedPreferences preferences = mContext.getSharedPreferences(BuildConfig.APPLICATION_ID, Context.MODE_PRIVATE);
-        long recipeId = preferences.getLong(KEY_RECIPE, 0l);
-        if(recipeId != 0l){
+        long recipeId = preferences.getLong(SaveIngredientsWidgetService.KEY_RECIPE, 0L);
+        Log.d(RecipeViewFactory.class.getSimpleName(), String.valueOf(recipeId));
+        if (recipeId != 0l) {
             mIngredients = database.ingredientDao().loadIngredients(recipeId).getValue();
         }
     }
@@ -49,7 +59,7 @@ public class RecipeViewFactory implements RemoteViewsService.RemoteViewsFactory 
 
     @Override
     public int getCount() {
-        return mIngredients != null ? mIngredients.size():0;
+        return mIngredients != null ? 5 : 0;
     }
 
     @Override
@@ -65,7 +75,7 @@ public class RecipeViewFactory implements RemoteViewsService.RemoteViewsFactory 
 
     private String buildIngredients() {
         StringBuilder sb = new StringBuilder();
-        for(Ingredient ingredient : mIngredients){
+        for (Ingredient ingredient : mIngredients) {
             sb.append(ingredient.getIngredient()).append("\n");
         }
         return sb.toString();
@@ -82,8 +92,8 @@ public class RecipeViewFactory implements RemoteViewsService.RemoteViewsFactory 
     }
 
     @Override
-    public long getItemId(int position) {
-        return position;
+    public long getItemId(int i) {
+        return i;
     }
 
     @Override

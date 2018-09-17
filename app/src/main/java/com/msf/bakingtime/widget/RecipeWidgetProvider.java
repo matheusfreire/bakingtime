@@ -12,7 +12,8 @@ public class RecipeWidgetProvider extends AppWidgetProvider {
 
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager, int appWidgetId) {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.ingredients_view);
-        Intent intent = new Intent(context, RecipeService.class);
+        Intent intent = new Intent(context, RecipeWidgetViewService.class);
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
         views.setRemoteAdapter(R.id.txt_ingredients_widget, intent);
         views.setEmptyView(R.id.txt_ingredients_widget, R.id.txt_pick_recipe);
         appWidgetManager.updateAppWidget(appWidgetId, views);
@@ -20,9 +21,8 @@ public class RecipeWidgetProvider extends AppWidgetProvider {
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        for (int appWidgetId : appWidgetIds) {
-            updateAppWidget(context, appWidgetManager, appWidgetId);
-        }
+        SaveIngredientsWidgetService.startActionUpdateWidget(context);
+        super.onUpdate(context, appWidgetManager, appWidgetIds);
     }
 
     @Override

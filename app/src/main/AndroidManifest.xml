@@ -47,13 +47,8 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/recipe_widget_info" />
         </receiver>
-
-        <service android:name=".widget.RecipeService"
-            android:permission="android.permission.BIND_REMOTEVIEWS"/>
-
         <service android:name=".widget.SaveIngredientsWidgetService"  android:exported="false"/>
-
-
+        <service android:name=".widget.RecipeWidgetViewService" android:permission="android.permission.BIND_REMOTEVIEWS"/>
     </application>
 
 </manifest>
