@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:padding="16dp"
-        android:text="@string/an_error_has_occurred"
+        tools:text="@string/an_error_has_occurred"
         android:textSize="20sp"
         android:visibility="invisible" />
 

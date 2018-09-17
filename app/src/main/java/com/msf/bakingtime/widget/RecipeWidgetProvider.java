@@ -8,7 +8,7 @@ import android.widget.RemoteViews;
 
 import com.msf.bakingtime.R;
 
-public class RecipeWidget extends AppWidgetProvider {
+public class RecipeWidgetProvider extends AppWidgetProvider {
 
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager, int appWidgetId) {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.ingredients_view);

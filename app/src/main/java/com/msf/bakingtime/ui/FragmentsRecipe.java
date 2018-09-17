@@ -30,7 +30,7 @@ public class FragmentsRecipe extends Fragment {
         mRecyclerView.addItemDecoration(dividerItemDecoration);
     }
 
-    boolean isOnline(){
+    boolean hasConnection(){
         ConnectivityManager connectivityManager = (ConnectivityManager) getActivity().getApplication().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
         return networkInfo != null && networkInfo.isConnected();

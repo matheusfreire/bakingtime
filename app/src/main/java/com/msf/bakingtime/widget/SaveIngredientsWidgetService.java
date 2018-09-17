@@ -50,9 +50,9 @@ public class SaveIngredientsWidgetService extends IntentService{
 
     private void handleUpdateAllWidget() {
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
-        int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(this, RecipeWidget.class));
+        int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(this, RecipeWidgetProvider.class));
         appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.txt_ingredients_widget);
-        RecipeWidget.updateIngredientsWidget(this, appWidgetManager, appWidgetIds);
+        RecipeWidgetProvider.updateIngredientsWidget(this, appWidgetManager, appWidgetIds);
     }
 
     private void handleUpdateText(long listIngredients) {

@@ -5,9 +5,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -92,17 +89,17 @@ public class RecipeDetailFragment extends FragmentsRecipe {
 
     private void buildRecyclerInstruction() {
         setupRecyclerView(mRecyclerInstructions);
-        if(recipe != null && isOnline()){
+        if(recipe != null && hasConnection()){
             InstructionAdapter instructionAdapter = new InstructionAdapter(recipe.getSteps(), mListenerVideo);
             mRecyclerInstructions.setAdapter(instructionAdapter);
-        } else if(!isOnline()){
+        } else if(!hasConnection()){
             mTextViewNoNetwork.setVisibility(View.VISIBLE);
         }
     }
 
     private void buildListIngredients() {
         if(recipe != null){
-            if(isOnline()){
+            if(hasConnection()){
                 buildIngredientsAdapter(recipe.getIngredients());
             } else {
                 database = RecipeDatabase.getInstance(getContext());

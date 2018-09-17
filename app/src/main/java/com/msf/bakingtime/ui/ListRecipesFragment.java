@@ -69,7 +69,7 @@ public class ListRecipesFragment extends FragmentsRecipe implements Delayer.Dela
         recipeViewModel = ViewModelProviders.of(this, factory).get(RecipeViewModel.class);
         mProgressLoading.setVisibility(View.VISIBLE);
         mRecyclerViewRecipes.setVisibility(View.INVISIBLE);
-        if(isOnline()){
+        if(hasConnection()){
             observableFromVM();
         } else {
             treatNetworkOffline();
@@ -109,6 +109,8 @@ public class ListRecipesFragment extends FragmentsRecipe implements Delayer.Dela
         if(recipes != null){
             buildAdapter(recipes);
             addRecipeAndIngredientsToDb(recipes);
+        } else {
+            treatNetworkOffline();
         }
     }
 
@@ -140,17 +142,21 @@ public class ListRecipesFragment extends FragmentsRecipe implements Delayer.Dela
         if(list != null){
             if(list.isEmpty()){
                 mErrorMessage.setText(R.string.zero_recipes);
+                mErrorMessage.setVisibility(View.VISIBLE);
                 mRecyclerViewRecipes.setAdapter(null);
                 mRecyclerViewRecipes.setVisibility(View.INVISIBLE);
+                mProgressLoading.setVisibility(View.INVISIBLE);
                 return;
             }
             buildAdapter(list);
         } else {
             mErrorMessage.setText(R.string.no_network);
+            mErrorMessage.setVisibility(View.VISIBLE);
             mRecyclerViewRecipes.setAdapter(null);
             mRecyclerViewRecipes.setVisibility(View.INVISIBLE);
             Snackbar mySnackbar = Snackbar.make(Objects.requireNonNull(this.getView()),R.string.try_again, Snackbar.LENGTH_SHORT);
             mySnackbar.show();
+            mProgressLoading.setVisibility(View.INVISIBLE);
         }
         Delayer.processMessage(true, this, getMainActivity().getIdlingResource());
     }

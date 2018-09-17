@@ -38,7 +38,7 @@
                 android:value="com.msf.bakingtime.ui.MainActivity" />
         </activity>
 
-        <receiver android:name=".widget.RecipeWidget">
+        <receiver android:name=".widget.RecipeWidgetProvider">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -51,7 +51,7 @@
         <service android:name=".widget.RecipeService"
             android:permission="android.permission.BIND_REMOTEVIEWS"/>
 
-        <service android:name=".widget.SaveIngredientsWidgetService" />
+        <service android:name=".widget.SaveIngredientsWidgetService"  android:exported="false"/>
 
 
     </application>
