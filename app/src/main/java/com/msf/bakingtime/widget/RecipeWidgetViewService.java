@@ -1,8 +1,14 @@
 package com.msf.bakingtime.widget;
 
+import android.arch.lifecycle.Lifecycle;
+import android.arch.lifecycle.LifecycleOwner;
+import android.arch.lifecycle.LifecycleRegistry;
+import android.arch.lifecycle.Observer;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
@@ -21,16 +27,33 @@ public class RecipeWidgetViewService extends RemoteViewsService {
     }
 }
 
-class RecipeViewFactory implements RemoteViewsService.RemoteViewsFactory {
+class RecipeViewFactory implements RemoteViewsService.RemoteViewsFactory, LifecycleOwner {
 
     private Context mContext;
     private List<Ingredient> mIngredients;
     private RecipeDatabase database;
+    private LifecycleRegistry mLifecycleRegistry;
+
+    private void getFromDb(){
+        SharedPreferences preferences = mContext.getSharedPreferences(BuildConfig.APPLICATION_ID, Context.MODE_PRIVATE);
+        long recipeId = preferences.getLong(SaveIngredientsWidgetService.KEY_RECIPE, 0L);
+        Log.d(RecipeViewFactory.class.getSimpleName(), String.valueOf(recipeId));
+        if (recipeId != 0L) {
+            database.ingredientDao().loadIngredients(recipeId).observe(this, new Observer<List<Ingredient>>() {
+                @Override
+                public void onChanged(@Nullable List<Ingredient> ingredientList) {
+                    mIngredients = ingredientList;
+                }
+            });
+        }
+    }
 
     RecipeViewFactory(Context mContext) {
+        mLifecycleRegistry = new LifecycleRegistry(this);
+        mLifecycleRegistry.markState(Lifecycle.State.CREATED);
         this.mContext = mContext;
         database = RecipeDatabase.getInstance(mContext);
-        Log.d(RecipeViewFactory.class.getSimpleName(), "Cheguei no factory");
+        getFromDb();
     }
 
     @Override
@@ -43,12 +66,7 @@ class RecipeViewFactory implements RemoteViewsService.RemoteViewsFactory {
         if (database == null) {
             return;
         }
-        SharedPreferences preferences = mContext.getSharedPreferences(BuildConfig.APPLICATION_ID, Context.MODE_PRIVATE);
-        long recipeId = preferences.getLong(SaveIngredientsWidgetService.KEY_RECIPE, 0L);
-        Log.d(RecipeViewFactory.class.getSimpleName(), String.valueOf(recipeId));
-        if (recipeId != 0l) {
-            mIngredients = database.ingredientDao().loadIngredients(recipeId).getValue();
-        }
+
     }
 
     @Override
@@ -59,7 +77,7 @@ class RecipeViewFactory implements RemoteViewsService.RemoteViewsFactory {
 
     @Override
     public int getCount() {
-        return mIngredients != null ? 5 : 0;
+        return mIngredients != null ? mIngredients.size() : 0;
     }
 
     @Override
@@ -99,5 +117,11 @@ class RecipeViewFactory implements RemoteViewsService.RemoteViewsFactory {
     @Override
     public boolean hasStableIds() {
         return true;
+    }
+
+    @NonNull
+    @Override
+    public Lifecycle getLifecycle() {
+        return mLifecycleRegistry;
     }
 }

@@ -41,15 +41,15 @@ public class SaveIngredientsWidgetService extends IntentService{
         if (intent != null) {
             final String action = intent.getAction();
             if (ACTION_UPDATE_TEXT_INGREDIENTS.equals(action)) {
-                handleUpdateText(intent);
+                long recipeId = intent.getLongExtra(KEY_RECIPE, 0L);
+                handleUpdateText(recipeId);
             } else if (ACTION_UPDATE_WIDGET.equals(action)) {
                 handleUpdateWidget();
             }
         }
     }
 
-    private void handleUpdateText(@NonNull Intent intent) {
-        long recipeId = intent.getLongExtra(KEY_RECIPE, 0L);
+    private void handleUpdateText(long recipeId) {
         saveRecipeIdOnSharedPreferences(recipeId);
         startActionUpdateWidget(this);
     }
@@ -57,7 +57,7 @@ public class SaveIngredientsWidgetService extends IntentService{
     private void handleUpdateWidget() {
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
         int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(this, RecipeWidgetProvider.class));
-        appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.txt_ingredients_widget);
+        appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.list_view_ingredients);
         RecipeWidgetProvider.updateIngredientsWidget(this, appWidgetManager, appWidgetIds);
     }
 
