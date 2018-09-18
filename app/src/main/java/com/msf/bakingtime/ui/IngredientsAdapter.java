@@ -18,7 +18,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class IngredientsAdapter extends ArrayAdapter<Ingredient> {
-    private static final String FREE_SPACE = " ";
     private List<Ingredient> mListIngredients;
     private int mLayout;
 
@@ -51,14 +50,8 @@ public class IngredientsAdapter extends ArrayAdapter<Ingredient> {
         } else {
             ingredientViewHolder = (IngredientViewHolder) convertView.getTag();
         }
-        ingredientViewHolder.mContent.setText(buildIngredientText(ingredient));
+        ingredientViewHolder.mContent.setText(ingredient.buildText());
         return convertView;
-    }
-
-    private String buildIngredientText(Ingredient ingredient) {
-        return new StringBuilder().append(ingredient.getQuantity()).append(FREE_SPACE)
-                .append(ingredient.getMeasure()).append(FREE_SPACE)
-                .append(ingredient.getIngredient()) .toString();
     }
 
     class IngredientViewHolder {

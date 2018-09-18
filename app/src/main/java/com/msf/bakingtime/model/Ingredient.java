@@ -5,6 +5,7 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
+import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
@@ -19,6 +20,11 @@ import lombok.Data;
         childColumns = "recipe_id"))
 public class Ingredient implements Parcelable {
 
+    private static final String FREE_SPACE = " ";
+    public static final String KEY_INGREDIENT = "ingredient";
+    public static final String KEY_MEASURE = "measure";
+    public static final String KEY_QUANTITY = "quantity";
+    public static final String KEY_HASHID = "hashId";
     @PrimaryKey
     @NonNull
     private String hashId;
@@ -44,7 +50,15 @@ public class Ingredient implements Parcelable {
     }
 
     @Ignore
-    protected Ingredient(Parcel in) {
+    public Ingredient(Cursor cursor){
+        setIngredient(cursor.getString(cursor.getColumnIndex(KEY_INGREDIENT)));
+        setMeasure(cursor.getString(cursor.getColumnIndex(KEY_MEASURE)));
+        setQuantity(cursor.getDouble(cursor.getColumnIndex(KEY_QUANTITY)));
+        setHashId(cursor.getString(cursor.getColumnIndex(KEY_HASHID)));
+    }
+
+    @Ignore
+    public Ingredient(Parcel in) {
         quantity = in.readDouble();
         measure = in.readString();
         ingredient = in.readString();
@@ -74,5 +88,11 @@ public class Ingredient implements Parcelable {
         dest.writeString(measure);
         dest.writeString(ingredient);
         dest.writeLong(recipeId);
+    }
+
+    public String buildText() {
+        return new StringBuilder().append(this.getQuantity()).append(FREE_SPACE)
+                .append(this.getMeasure()).append(FREE_SPACE)
+                .append(this.getIngredient()) .toString();
     }
 }
