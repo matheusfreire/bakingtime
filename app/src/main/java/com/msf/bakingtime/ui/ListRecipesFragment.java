@@ -122,10 +122,6 @@ public class ListRecipesFragment extends FragmentsRecipe implements Delayer.Dela
         mProgressLoading.setVisibility(View.INVISIBLE);
     }
 
-    private MainActivity getMainActivity() {
-        return (MainActivity) getActivity();
-    }
-
     private void treatNetworkOffline() {
         database = RecipeDatabase.getInstance(getContext());
         LiveData<List<Recipe>> recipeLiveData = database.recipeDao().loadRecipes();
@@ -158,7 +154,7 @@ public class ListRecipesFragment extends FragmentsRecipe implements Delayer.Dela
             mySnackbar.show();
             mProgressLoading.setVisibility(View.INVISIBLE);
         }
-        Delayer.processMessage(true, this, getMainActivity().getIdlingResource());
+        Delayer.processMessage(true, this, ((MainActivity) getActivity()).getIdlingResource());
     }
 
     @Override

@@ -45,6 +45,7 @@ public class VideoFragment extends Fragment implements ExoPlayer.EventListener{
     private static final String NEXT_STEP = "nextStep";
     private static final String CURRENT_STEP = "currentStep";
     private static final String CLASS_NAME = VideoFragment.class.getSimpleName().toUpperCase();
+    public static final String APPLICATION_NAME = "bakingTime";
 
     private Step step;
 
@@ -107,7 +108,7 @@ public class VideoFragment extends Fragment implements ExoPlayer.EventListener{
                     defaultLoadControl);
             mExoPlayerView.setPlayer(mSimpleExoPlayer);
             mSimpleExoPlayer.addListener(this);
-            String userAgent = Util.getUserAgent(getContext(), "bakingTime");
+            String userAgent = Util.getUserAgent(getContext(), APPLICATION_NAME);
             MediaSource mediaSource = new ExtractorMediaSource(Uri.parse(url), new DefaultDataSourceFactory(
                     getContext(), userAgent), new DefaultExtractorsFactory(), null, null);
             mExoPlayerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FILL);

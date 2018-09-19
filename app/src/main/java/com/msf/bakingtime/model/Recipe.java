@@ -9,7 +9,6 @@ import android.os.Parcelable;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
-import java.util.TreeSet;
 
 import lombok.Data;
 

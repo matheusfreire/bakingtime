@@ -27,7 +27,7 @@ public class RecipeWidgetProvider extends AppWidgetProvider {
 
     public static void updateIngredientsWidget(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         for (int appWidgetId : appWidgetIds) {
-            updateAppWidget(context, appWidgetManager, appWidgetId);
+            updateAppWidget(context, appWid getManager, appWidgetId);
         }
     }
 }
